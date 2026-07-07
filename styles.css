@@ -111,6 +111,37 @@ body {
   background: var(--wash-deep);
 }
 
+/* Hero download buttons: black like the app's store buttons, and a fixed
+   equal width so the pair lines up. White on black is 21:1 contrast. */
+.btn--store {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 310px;
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.btn--store:hover {
+  background: #1d1d1f;
+  border-color: #1d1d1f;
+}
+
+.btn-apple-logo {
+  width: 17px;
+  height: 21px;
+  flex: none;
+  margin-top: -2px; /* optical centring of the Apple mark */
+}
+
+.btn-google-logo {
+  width: 19px;
+  height: 19px;
+  flex: none;
+}
+
 .btn:focus-visible,
 .signup-input:focus-visible,
 a:focus-visible {
@@ -141,13 +172,6 @@ a:focus-visible {
   display: block;
   width: 100%;
   height: auto;
-}
-
-.lockup-letter {
-  font-family: var(--font-sans);
-  font-size: 230px;
-  font-weight: 700;
-  fill: var(--plum);
 }
 
 /* Default (no JS / reduced motion) = resting state: assembled lockup,
@@ -195,15 +219,18 @@ a:focus-visible {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--g-from), var(--g-to));
+  object-fit: cover;
   flex: none;
 }
 
 .strapline {
-  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
-  color: var(--muted);
-  margin: 20px auto 28px;
-  max-width: 34em;
+  font-size: clamp(1.35rem, 3.4vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 24px auto 32px;
+  max-width: 30em;
 }
 
 .cta-row {
@@ -211,6 +238,23 @@ a:focus-visible {
   flex-wrap: wrap;
   justify-content: center;
   gap: 14px;
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────── */
+
+/* One restrained rule reused across the page: rise 12px, fade in, once.
+   main.js adds .reveal (then .is-visible on intersection), so without JS
+   or with reduced motion nothing is hidden and nothing moves. */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── Screenshots ───────────────────────────────────────────── */
@@ -222,23 +266,13 @@ a:focus-visible {
   margin-top: 36px;
 }
 
-.shot-placeholder {
-  aspect-ratio: 9 / 19.5;
-  border-radius: 28px;
-  border: 1px solid var(--line);
-  background: linear-gradient(160deg, var(--wash-deep), var(--wash));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.shot-placeholder span {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--plum);
-  opacity: 0.6;
+.shot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The exports have transparent rounded corners, so drop-shadow follows
+     the shape; box-shadow would draw a rectangle behind the corners. */
+  filter: drop-shadow(0 18px 30px rgba(36, 26, 32, 0.16));
 }
 
 .shot figcaption {
@@ -254,44 +288,23 @@ a:focus-visible {
   background: var(--wash-deep);
 }
 
+/* Centered statement blocks; larger than body text so the section
+   carries weight without the old three-step grid. */
 .why-copy {
-  max-width: 36em;
+  max-width: 30em;
   margin: 0 auto;
-  color: var(--muted);
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--ink);
 }
 
-.steps {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 28px;
-  max-width: 860px;
-  margin: 44px auto 0;
-  text-align: left;
+.why-copy strong {
+  font-weight: 700;
 }
 
-.step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--plum);
-  color: #fff;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-}
-
-.step h3 {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.step p {
-  font-size: 0.92rem;
+.why-copy--support {
+  margin-top: 28px;
+  font-size: clamp(1rem, 2vw, 1.15rem);
   color: var(--muted);
 }
 
