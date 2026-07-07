@@ -102,15 +102,6 @@ body {
   border-color: var(--plum-dark);
 }
 
-.btn--outline {
-  background: transparent;
-  color: var(--plum);
-}
-
-.btn--outline:hover {
-  background: var(--wash-deep);
-}
-
 /* Hero download buttons: black like the app's store buttons, and a fixed
    equal width so the pair lines up. White on black is 21:1 contrast. */
 .btn--store {

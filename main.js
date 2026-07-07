@@ -171,35 +171,20 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 })();
 
 /* ============================================================
-   Android CTA: reveal the email field
+   Android CTA: scroll to the signup section
+   The form is always visible there, so the hero button just
+   takes you to it and focuses the email field.
    ============================================================ */
-(function androidReveal() {
+(function androidCta() {
   const heroCta = document.getElementById("android-cta");
-  const revealBtn = document.getElementById("android-reveal");
-  const form = document.getElementById("signup-form");
   const emailInput = document.getElementById("signup-email");
   const section = document.getElementById("android");
-  if (!form || !emailInput) return;
+  if (!heroCta || !section || !emailInput) return;
 
-  function revealForm() {
-    form.hidden = false;
-    if (revealBtn) revealBtn.hidden = true;
-  }
-
-  if (revealBtn) {
-    revealBtn.addEventListener("click", () => {
-      revealForm();
-      emailInput.focus();
-    });
-  }
-
-  if (heroCta) {
-    heroCta.addEventListener("click", () => {
-      revealForm();
-      section.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-      emailInput.focus({ preventScroll: true });
-    });
-  }
+  heroCta.addEventListener("click", () => {
+    section.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+    emailInput.focus({ preventScroll: true });
+  });
 })();
 
 /* ============================================================
