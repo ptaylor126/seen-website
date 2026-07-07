@@ -1,0 +1,432 @@
+/* ============================================================
+   Seen — marketing site
+   Plum system tokens from the site PRD (§5).
+   ============================================================ */
+
+:root {
+  --plum:       #7A3960;  /* accent, brand */
+  --plum-dark:  #5E2B4A;  /* hover */
+  --wash:       #E4CADB;  /* soft plum panels */
+  --wash-deep:  #EFE7EC;  /* icon background tone, section wash */
+  --ink:        #241A20;  /* near-black warm text */
+  --muted:      #6E6169;  /* secondary text */
+  --paper:      #FBF9FA;  /* page background, warm white */
+  --line:       #ECE3E8;  /* hairlines */
+
+  --font-sans: "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Shared section chrome ─────────────────────────────────── */
+
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 72px 24px;
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum);
+  margin-bottom: 12px;
+}
+
+.section h2 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+/* ── Buttons: stadium pills ────────────────────────────────── */
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 16px 28px;
+  border-radius: 999px;
+  border: 2px solid var(--plum);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn--primary {
+  background: var(--plum);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--plum-dark);
+  border-color: var(--plum-dark);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--plum);
+}
+
+.btn--outline:hover {
+  background: var(--wash-deep);
+}
+
+.btn:focus-visible,
+.signup-input:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--plum);
+  outline-offset: 3px;
+}
+
+/* ── Hero ──────────────────────────────────────────────────── */
+
+.hero {
+  padding: 48px 24px 64px;
+  text-align: center;
+}
+
+.lockup-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.lockup {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 40px 0 8px;
+}
+
+.lockup-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lockup-letter {
+  font-family: var(--font-sans);
+  font-size: 230px;
+  font-weight: 700;
+  fill: var(--plum);
+}
+
+/* Default (no JS / reduced motion) = resting state: assembled lockup,
+   eyes centred, labels hidden. JS only adds motion on top. */
+.word-part,
+.eye {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.gaze-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(36, 26, 32, 0.08);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gaze-label--left {
+  left: 0;
+  top: 6%;
+}
+
+.gaze-label--right {
+  right: 0;
+  top: 20%;
+}
+
+.gaze-label--low {
+  top: auto;
+  bottom: 4%;
+  left: 6%;
+}
+
+.label-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--g-from), var(--g-to));
+  flex: none;
+}
+
+.strapline {
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  color: var(--muted);
+  margin: 20px auto 28px;
+  max-width: 34em;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ── Screenshots ───────────────────────────────────────────── */
+
+.shots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.shot-placeholder {
+  aspect-ratio: 9 / 19.5;
+  border-radius: 28px;
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, var(--wash-deep), var(--wash));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shot-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--plum);
+  opacity: 0.6;
+}
+
+.shot figcaption {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ── Why / how it works ────────────────────────────────────── */
+
+.section--why {
+  max-width: none;
+  background: var(--wash-deep);
+}
+
+.why-copy {
+  max-width: 36em;
+  margin: 0 auto;
+  color: var(--muted);
+}
+
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+  max-width: 860px;
+  margin: 44px auto 0;
+  text-align: left;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--plum);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.step h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.step p {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* ── Android signup ────────────────────────────────────────── */
+
+.android-copy {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.signup-form {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.signup-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.signup-input {
+  flex: 1 1 220px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  padding: 14px 20px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.signup-input:focus {
+  border-color: var(--plum);
+  outline: none;
+}
+
+/* Honeypot: visually gone but still in the DOM for bots to find. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.signup-status {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  min-height: 1.5em;
+}
+
+.signup-status.is-error {
+  color: #A03232;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding: 40px 24px 48px;
+}
+
+.footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-icon {
+  border-radius: 7px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: var(--plum);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-tmdb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 34em;
+}
+
+.tmdb-logo {
+  height: 15px;
+  width: auto;
+}
+
+/* ── Small screens ─────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .section {
+    padding: 56px 20px;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Labels sit close to the eyes so they do not overflow. */
+  .gaze-label {
+    font-size: 0.75rem;
+    padding: 6px 10px 6px 6px;
+  }
+
+  .label-avatar {
+    width: 20px;
+    height: 20px;
+  }
+}

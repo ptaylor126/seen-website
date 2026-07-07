@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seen — What to watch, from friends you trust</title>
+  <meta name="description" content="Seen is movie and TV recommendations from friends you trust, not an algorithm. Download on the App Store." />
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="apple-touch-icon" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- HERO                                                          -->
+  <!-- ============================================================ -->
+  <header class="hero">
+    <div class="lockup-wrap">
+
+      <!--
+        TODO: Replace this redrawn placeholder lockup with the real exported
+        wordmark SVG (from Figma / app assets). Requirements for the export:
+        the two irises must be separate nodes (ids: iris-left / iris-right)
+        and each whole eyeball a separate group (ids: eye-left / eye-right)
+        so the animation can move them. Keep the class names word-part,
+        eye, and iris so main.js keeps working.
+      -->
+      <div class="lockup" role="img" aria-label="Seen">
+        <svg class="lockup-svg" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <!-- S -->
+          <text class="word-part lockup-letter" x="10" y="178">S</text>
+
+          <!-- first e body (plum disc with the e-slot) -->
+          <g class="word-part">
+            <circle cx="225" cy="116" r="62" fill="var(--plum)" />
+            <rect x="223" y="120" width="66" height="20" fill="var(--paper)" />
+          </g>
+
+          <!-- second e body -->
+          <g class="word-part">
+            <circle cx="363" cy="116" r="62" fill="var(--plum)" />
+            <rect x="361" y="120" width="66" height="20" fill="var(--paper)" />
+          </g>
+
+          <!-- n -->
+          <text class="word-part lockup-letter" x="437" y="178">n</text>
+
+          <!-- left eyeball -->
+          <g class="eye" id="eye-left">
+            <ellipse cx="225" cy="98" rx="40" ry="25" fill="#E3E1E4" transform="rotate(-14 225 98)" />
+            <g class="iris" id="iris-left">
+              <circle cx="225" cy="98" r="14" fill="#C9930E" stroke="#8A6208" stroke-width="3" />
+              <circle cx="220" cy="93" r="4" fill="#FFF3D6" />
+            </g>
+          </g>
+
+          <!-- right eyeball -->
+          <g class="eye" id="eye-right">
+            <ellipse cx="363" cy="98" rx="40" ry="25" fill="#E3E1E4" transform="rotate(-14 363 98)" />
+            <g class="iris" id="iris-right">
+              <circle cx="363" cy="98" r="14" fill="#C9930E" stroke="#8A6208" stroke-width="3" />
+              <circle cx="358" cy="93" r="4" fill="#FFF3D6" />
+            </g>
+          </g>
+        </svg>
+
+        <!--
+          TODO: Replace these placeholder friend + show labels with real
+          early-user names and real shows (see Hero Animation PRD §6).
+          Avatar gradients are the app's indigo and cerulean fallbacks.
+        -->
+        <div class="gaze-label gaze-label--left" id="gaze-label-1" aria-hidden="true">
+          <span class="label-avatar" style="--g-from:#474C93; --g-to:#353A73"></span>
+          <span class="label-text">Deb · The Bear</span>
+        </div>
+        <div class="gaze-label gaze-label--right" id="gaze-label-2" aria-hidden="true">
+          <span class="label-avatar" style="--g-from:#2D6E96; --g-to:#1F5274"></span>
+          <span class="label-text">Sam · Severance</span>
+        </div>
+        <div class="gaze-label gaze-label--left gaze-label--low" id="gaze-label-3" aria-hidden="true">
+          <span class="label-avatar" style="--g-from:#474C93; --g-to:#353A73"></span>
+          <span class="label-text">Priya · Past Lives</span>
+        </div>
+      </div>
+
+      <p class="strapline">Movie and TV recs from friends you trust. Not an algorithm.</p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="https://apps.apple.com/app/id6775920785">Download on the App&nbsp;Store</a>
+        <button class="btn btn--outline" type="button" id="android-cta">Get notified on Android</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================ -->
+    <!-- APP SCREENSHOTS                                               -->
+    <!-- ============================================================ -->
+    <section class="section section--shots" aria-labelledby="shots-heading">
+      <p class="eyebrow">The app</p>
+      <h2 id="shots-heading">See what your friends are watching.</h2>
+
+      <!--
+        TODO: Replace these placeholder blocks with real app screenshots
+        (current 1.0.x nav): home recs, a friend rec with a note, the
+        library, and a friend profile. Drop the images into assets/ and
+        swap each .shot-placeholder for an <img>.
+      -->
+      <div class="shots-grid">
+        <figure class="shot">
+          <div class="shot-placeholder"><span>Screenshot</span></div>
+          <figcaption>Recs from friends, on home</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-placeholder"><span>Screenshot</span></div>
+          <figcaption>A rec with a note attached</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-placeholder"><span>Screenshot</span></div>
+          <figcaption>Your library</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-placeholder"><span>Screenshot</span></div>
+          <figcaption>A friend's profile</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- WHY / HOW IT WORKS                                            -->
+    <!-- ============================================================ -->
+    <section class="section section--why" aria-labelledby="why-heading">
+      <p class="eyebrow">Why Seen</p>
+      <h2 id="why-heading">Friends, not algorithms.</h2>
+      <p class="why-copy">
+        Every rec on Seen comes from someone you actually know, with their reason
+        attached. No trending tab, no engagement bait — just the things your
+        friends can't stop talking about.
+      </p>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step-num">1</span>
+          <h3>Follow your friends</h3>
+          <p>Seen is only your people. Nobody else gets a say.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">2</span>
+          <h3>Get recs with a reason</h3>
+          <p>See what they loved and why they think you'll love it too.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">3</span>
+          <h3>Watch and pass it on</h3>
+          <p>Mark it seen, then send it to the next friend who needs it.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- ANDROID SIGNUP                                                -->
+    <!-- ============================================================ -->
+    <section class="section section--android" id="android" aria-labelledby="android-heading">
+      <p class="eyebrow">Android</p>
+      <h2 id="android-heading">Coming to Android.</h2>
+      <p class="android-copy">Leave your email and we'll tell you the day it lands.</p>
+
+      <button class="btn btn--outline" type="button" id="android-reveal">Get notified</button>
+
+      <form class="signup-form" id="signup-form" hidden novalidate>
+        <div class="signup-row">
+          <label class="visually-hidden" for="signup-email">Email address</label>
+          <input
+            class="signup-input"
+            type="email"
+            id="signup-email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            inputmode="email"
+            required
+          />
+          <button class="btn btn--primary" type="submit" id="signup-submit">Notify me</button>
+        </div>
+
+        <!-- Honeypot: hidden from humans; bots that fill it get dropped silently. -->
+        <div class="hp-field" aria-hidden="true">
+          <label for="signup-website">Leave this field empty</label>
+          <input type="text" id="signup-website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- FOOTER                                                        -->
+  <!-- ============================================================ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img class="footer-icon" src="assets/icon.png" alt="" width="28" height="28" />
+        <span>© 2026 Seen</span>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer">
+        <a href="https://ptaylor126.github.io/seen/privacy.html">Privacy</a>
+        <a href="https://ptaylor126.github.io/seen/terms.html">Terms</a>
+        <!-- TODO: Replace with the real contact address (e.g. hello@seenrecs.com once domain email is set up). -->
+        <a href="mailto:hello@seenrecs.com">hello@seenrecs.com</a>
+      </nav>
+
+      <div class="footer-tmdb">
+        <img class="tmdb-logo" src="assets/tmdb-logo.svg" alt="TMDB" width="118" height="15" />
+        <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
