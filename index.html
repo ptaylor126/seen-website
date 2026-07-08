@@ -7,12 +7,39 @@
   <meta name="description" content="Seen is movie and TV recommendations from friends you trust, not an algorithm. Download on the App Store." />
   <link rel="icon" type="image/png" href="assets/icon.png" />
   <link rel="apple-touch-icon" href="assets/icon.png" />
+  <script>
+    // Decide the first-visit intro BEFORE first paint, so the site never
+    // flashes underneath it. The class shows the overlay and locks scroll
+    // via CSS; main.js reads the same class to run the sequence. Any
+    // failure (blocked localStorage etc.) means no intro, site as normal.
+    try {
+      if (
+        !matchMedia("(prefers-reduced-motion: reduce)").matches &&
+        (new URLSearchParams(location.search).has("intro") ||
+          !localStorage.getItem("seen-intro-seen"))
+      ) {
+        document.documentElement.classList.add("intro-pending");
+      }
+    } catch (e) {}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- ============================================================ -->
+  <!-- FIRST-VISIT INTRO OVERLAY                                     -->
+  <!-- Shown only when <html> has .intro-pending (set pre-paint in   -->
+  <!-- the head). main.js clones the hero lockup into .intro-stage,  -->
+  <!-- plays the darts full screen, then FLIPs it onto the hero.     -->
+  <!-- ============================================================ -->
+  <div class="intro" id="intro">
+    <div class="intro-bg"></div>
+    <div class="intro-stage" id="intro-stage" aria-hidden="true"></div>
+    <button class="intro-skip" type="button" id="intro-skip" aria-label="Skip intro">Skip</button>
+  </div>
 
   <!-- ============================================================ -->
   <!-- HERO                                                          -->

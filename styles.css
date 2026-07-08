@@ -25,6 +25,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Keep layout width identical whether or not the scrollbar is shown,
+     so removing the intro's scroll lock doesn't reflow the page. */
+  scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -138,6 +141,112 @@ body {
 a:focus-visible {
   outline: 3px solid var(--plum);
   outline-offset: 3px;
+}
+
+/* ── First-visit intro overlay ─────────────────────────────── */
+
+/* Hidden unless the pre-paint head script adds .intro-pending to <html>.
+   The overlay covers the site from the first frame; main.js populates
+   .intro-stage and removes everything at handoff. */
+.intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-pending .intro {
+  display: flex;
+}
+
+/* Lock page scroll while the overlay is up. */
+.intro-pending {
+  overflow: hidden;
+}
+
+/* Hide the hero's own lockup while the intro plays, so the backdrop
+   fade doesn't show a second copy beneath the moving one. The class is
+   removed at the exact moment the intro clone has landed on it. */
+.intro-pending .hero .lockup-svg {
+  visibility: hidden;
+}
+
+.intro-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+}
+
+.intro-stage {
+  position: relative;
+  width: min(78vw, 720px);
+}
+
+/* Full screen gives the labels more room: push them out beside the
+   lockup instead of hugging its edges like in the hero. */
+.intro-stage .gaze-label {
+  font-size: 1rem;
+}
+
+.intro-stage .gaze-label--left {
+  left: -14%;
+  top: 12%;
+}
+
+.intro-stage .gaze-label--right {
+  right: -14%;
+  top: 32%;
+}
+
+.intro-stage .gaze-label--low {
+  left: -8%;
+  top: auto;
+  bottom: 2%;
+}
+
+@media (max-width: 600px) {
+  .intro-stage .gaze-label--left {
+    left: -2%;
+    top: -14%;
+  }
+
+  .intro-stage .gaze-label--right {
+    right: -2%;
+    top: auto;
+    bottom: -14%;
+  }
+
+  .intro-stage .gaze-label--low {
+    left: 4%;
+    bottom: -30%;
+  }
+}
+
+.intro-skip {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.intro-skip:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.intro-skip:focus-visible {
+  outline: 3px solid var(--plum);
+  outline-offset: 2px;
 }
 
 /* ── Hero ──────────────────────────────────────────────────── */

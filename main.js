@@ -14,53 +14,42 @@ const WAITLIST_URL = "https://xhzrsdgrgimlrdnyzidr.supabase.co/rest/v1/waitlist"
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============================================================
-   Hero animation
-   One play on load, then rest. The complete lockup (eyes
-   included) fades in as a single piece, holds briefly, then the
-   eyes dart: each glance = 0.15s move + 0.8s hold, total intro
-   ~4.25s. The strapline and buttons are NOT gated behind the
-   animation — they are static HTML, visible from the start.
+   Lockup animation helpers
+   Shared by the in-place hero animation and the first-visit
+   full-screen intro, so both play the identical sequence: the
+   complete lockup appears as one piece, holds briefly, then the
+   eyes dart left / right / left (0.15s move + ~0.8s hold each)
+   with a friend label synced to every glance, and settle looking
+   left (the app icon's pose, which is the SVG's natural state).
 
    The default DOM state is the resting, assembled lockup with
-   the eyes looking left (the app icon's pose, as exported) and
-   labels hidden, so with reduced motion (or no JS) we simply
-   never animate.
+   labels hidden, so with reduced motion (or no JS) nothing here
+   runs and the page is simply complete.
    ============================================================ */
-(function heroAnimation() {
-  if (prefersReducedMotion) return;
+const EASE_POP = "cubic-bezier(0.2, 0.8, 0.3, 1)";
+const EASE_DART = "cubic-bezier(0.3, 0.1, 0.3, 1)";
+const GAZE_X = 18; // iris travel in SVG units
 
-  const lockup = document.querySelector(".lockup-svg");
-  const eyes = document.querySelectorAll(".eye");
-  const irises = document.querySelectorAll(".iris");
-  if (!lockup || !eyes.length || !irises.length) return;
-
-  const EASE_POP = "cubic-bezier(0.2, 0.8, 0.3, 1)";
-  const EASE_DART = "cubic-bezier(0.3, 0.1, 0.3, 1)";
-  const GAZE_X = 18; // iris travel in SVG units
-
-  // 1. The whole lockup — letterforms and eyes together — appears as
-  //    one piece. The eyes hold centred through this (the gaze track
-  //    below fills backwards), then dart after a brief rest.
-  lockup.animate(
+// The whole lockup — letterforms and eyes together — appears as one
+// piece. The eyes hold centred through this (the gaze track fills
+// backwards), then dart after a brief rest.
+function appearAsOne(el) {
+  el.animate(
     [
       { opacity: 0, transform: "scale(0.98)" },
       { opacity: 1, transform: "scale(1)" },
     ],
     { duration: 500, easing: EASE_POP, fill: "backwards" }
   );
+}
 
-  // 2. Gaze track: left, right, left, then settle into the rest pose —
-  //    looking left, matching the app icon. Starts at t=1400ms, runs
-  //    2850ms. Each dart is 150ms with an ~800ms hold; the offsets
-  //    below encode move/hold boundaries.
-  //
-  //    The SVG's natural iris position IS the left-looking rest pose,
-  //    so keyframes are expressed relative to it: data-center-dx/dy is
-  //    each iris's offset to the sclera centre, darts are ±GAZE_X from
-  //    centre, and the final keyframe returns to translate(0) = rest.
-  //    fill: "backwards" holds the eyes centred through the intro,
-  //    before the first dart.
-  irises.forEach((iris) => {
+// Gaze track: left, right, left, then settle into the rest pose.
+// Starts at t=1400ms, runs 2850ms; the offsets encode move/hold
+// boundaries. data-center-dx/dy is each iris's offset to the sclera
+// centre; darts are ±GAZE_X from centre, and the final keyframe
+// returns to translate(0) = the left-looking rest pose.
+function runGaze(container) {
+  container.querySelectorAll(".iris").forEach((iris) => {
     const dx = parseFloat(iris.dataset.centerDx) || 0;
     const dy = parseFloat(iris.dataset.centerDy) || 0;
     const centre = `translate(${dx}px, ${dy}px)`;
@@ -81,36 +70,38 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
       { duration: 2850, delay: 1400, fill: "backwards" }
     );
   });
+}
 
-  // 3. Labels flash in on the side the eyes are looking, synced to
-  //    each glance, and fade as the eyes move away.
-  //    Glance windows (absolute ms): left 1400–2350, right 2350–3300,
-  //    left 3300–4100.
-  function flashLabel(id, side, showAt, hideAt) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const from = side === "left" ? "translateX(10px)" : "translateX(-10px)";
-    el.animate(
-      [
-        { opacity: 0, transform: `${from} scale(0.94)` },
-        { opacity: 1, transform: "translateX(0) scale(1)" },
-      ],
-      { duration: 200, delay: showAt, easing: EASE_POP, fill: "forwards" }
-    );
-    el.animate(
-      [
-        { opacity: 1, transform: "translateX(0) scale(1)" },
-        { opacity: 0, transform: `${from} scale(0.96)` },
-      ],
-      { duration: 180, delay: hideAt, easing: "ease-in", fill: "forwards" }
-    );
-  }
-  flashLabel("gaze-label-1", "left", 1450, 2280);
-  flashLabel("gaze-label-2", "right", 2500, 3230);
-  flashLabel("gaze-label-3", "left", 3450, 4030);
+function flashLabel(el, side, showAt, hideAt) {
+  if (!el) return;
+  const from = side === "left" ? "translateX(10px)" : "translateX(-10px)";
+  el.animate(
+    [
+      { opacity: 0, transform: `${from} scale(0.94)` },
+      { opacity: 1, transform: "translateX(0) scale(1)" },
+    ],
+    { duration: 200, delay: showAt, easing: EASE_POP, fill: "forwards" }
+  );
+  el.animate(
+    [
+      { opacity: 1, transform: "translateX(0) scale(1)" },
+      { opacity: 0, transform: `${from} scale(0.96)` },
+    ],
+    { duration: 180, delay: hideAt, easing: "ease-in", fill: "forwards" }
+  );
+}
 
-  // 4. Ambient life: a slow blink every several seconds after rest.
-  //    Subtle, and easy to remove if it reads as fussy.
+// Labels flash in on the side the eyes are looking, synced to each
+// glance window: left 1400–2350, right 2350–3300, left 3300–4100.
+function runLabelFlashes(container) {
+  flashLabel(container.querySelector(".gaze-label--left:not(.gaze-label--low)"), "left", 1450, 2280);
+  flashLabel(container.querySelector(".gaze-label--right"), "right", 2500, 3230);
+  flashLabel(container.querySelector(".gaze-label--low"), "left", 3450, 4030);
+}
+
+// Ambient life: a slow blink every several seconds after rest.
+function startBlink(container) {
+  const eyes = container.querySelectorAll(".eye");
   window.setTimeout(() => {
     window.setInterval(() => {
       eyes.forEach((eye) => {
@@ -125,6 +116,116 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
       });
     }, 6000);
   }, 4600);
+}
+
+/* ============================================================
+   First-visit intro / hero animation
+   The head script decides pre-paint whether the intro plays
+   (first visit or ?intro, never with reduced motion) and flags
+   it with .intro-pending on <html>. Exactly one of these runs:
+
+   - Intro: the lockup plays its sequence full screen in the
+     overlay, then FLIPs onto the hero's measured position; the
+     hero itself stays in its static rest pose underneath so the
+     swap is invisible, and it does NOT re-dart.
+   - Hero: the same sequence plays in place, as always.
+   ============================================================ */
+const INTRO_FLAG = "seen-intro-seen";
+const playIntro = document.documentElement.classList.contains("intro-pending");
+
+function markIntroSeen() {
+  try {
+    localStorage.setItem(INTRO_FLAG, "1");
+  } catch (e) {}
+}
+
+(function heroOrIntro() {
+  if (prefersReducedMotion) return;
+
+  const heroLockup = document.querySelector(".hero .lockup");
+  const heroSvg = heroLockup && heroLockup.querySelector(".lockup-svg");
+  if (!heroSvg) return;
+
+  if (!playIntro) {
+    appearAsOne(heroSvg);
+    runGaze(heroLockup);
+    runLabelFlashes(heroLockup);
+    startBlink(heroLockup);
+    return;
+  }
+
+  const overlay = document.getElementById("intro");
+  const stage = document.getElementById("intro-stage");
+  const skipBtn = document.getElementById("intro-skip");
+  if (!overlay || !stage || !skipBtn) return;
+
+  // Clone the hero lockup into the overlay so the intro shows the
+  // exact same artwork. Strip cloned ids (the originals keep them;
+  // fill url(#…) references still resolve to the hero's gradients).
+  const svgClone = heroSvg.cloneNode(true);
+  svgClone.querySelectorAll("[id]").forEach((n) => n.removeAttribute("id"));
+  svgClone.removeAttribute("id");
+  stage.appendChild(svgClone);
+  heroLockup.querySelectorAll(".gaze-label").forEach((label) => {
+    const clone = label.cloneNode(true);
+    clone.removeAttribute("id");
+    stage.appendChild(clone);
+  });
+
+  // The FLIP below measures the hero's viewport position, so make
+  // sure we are at the top of the page while the overlay is up.
+  window.scrollTo(0, 0);
+
+  let done = false;
+
+  appearAsOne(svgClone);
+  runGaze(stage);
+  runLabelFlashes(stage);
+  const handoffTimer = window.setTimeout(handoff, 4500);
+
+  function finish() {
+    if (done) return;
+    done = true;
+    window.clearTimeout(handoffTimer);
+    markIntroSeen();
+    overlay.remove();
+    document.documentElement.classList.remove("intro-pending");
+    startBlink(heroLockup);
+  }
+
+  // FLIP handoff: measure where the hero lockup really is, animate the
+  // intro lockup to land exactly on it while the backdrop fades to
+  // reveal the site, then swap. The hero underneath is already resting
+  // eyes-left (its no-intro animation never ran), so removing the
+  // overlay is invisible.
+  function handoff() {
+    if (done) return;
+    const from = svgClone.getBoundingClientRect();
+    const to = heroSvg.getBoundingClientRect();
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    const scale = to.width / from.width;
+
+    const move = stage.animate(
+      [
+        { transform: "translate(0px, 0px) scale(1)" },
+        { transform: `translate(${dx}px, ${dy}px) scale(${scale})` },
+      ],
+      { duration: 700, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+    );
+    overlay
+      .querySelector(".intro-bg")
+      .animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: "ease-out", fill: "forwards" });
+    skipBtn.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "forwards" });
+
+    // finish() is idempotent: the finished promise is the precise signal,
+    // and the timer is a safety net in case it never resolves (e.g. the
+    // animation is cancelled by devtools or a throttled tab).
+    move.finished.then(finish).catch(finish);
+    window.setTimeout(finish, 720);
+  }
+
+  skipBtn.addEventListener("click", finish);
 })();
 
 /* ============================================================
