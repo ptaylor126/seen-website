@@ -77,6 +77,15 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 16px;
+  text-wrap: balance;
+}
+
+/* Running copy: avoid a single orphaned word on the last line. */
+.why-copy,
+.android-copy,
+.shot figcaption,
+.footer-tmdb p {
+  text-wrap: pretty;
 }
 
 /* ── Buttons: stadium pills ────────────────────────────────── */
@@ -423,6 +432,7 @@ a:focus-visible {
   color: var(--ink);
   margin: 24px auto 32px;
   max-width: 30em;
+  text-wrap: balance;
 }
 
 .cta-row {
