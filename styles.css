@@ -184,43 +184,61 @@ a:focus-visible {
   width: min(78vw, 720px);
 }
 
-/* Full screen gives the labels more room: push them out beside the
-   lockup instead of hugging its edges like in the hero. */
+/* Full screen gives the cards more room: bigger type, and they sit
+   fully beside the lockup on the side the eyes glance to. */
 .intro-stage .gaze-label {
   font-size: 1rem;
 }
 
 .intro-stage .gaze-label--left {
-  left: -14%;
-  top: 12%;
+  left: auto;
+  right: 100%;
+  margin-right: 28px;
+  top: -16%;
 }
 
 .intro-stage .gaze-label--right {
-  right: -14%;
-  top: 32%;
+  right: auto;
+  left: 100%;
+  margin-left: 28px;
+  top: 0;
 }
 
 .intro-stage .gaze-label--low {
-  left: -8%;
-  top: auto;
-  bottom: 2%;
+  left: auto;
+  right: 100%;
+  margin-right: 28px;
+  top: 30%;
 }
 
+/* Narrow screens: no room beside the lockup, so the cards sit above
+   (left glances) and below (right glance) it instead, a size down so
+   they clear the Skip control. */
 @media (max-width: 600px) {
+  .intro-stage .gaze-label {
+    font-size: 0.85rem;
+  }
+
   .intro-stage .gaze-label--left {
-    left: -2%;
-    top: -14%;
+    right: auto;
+    left: -4%;
+    margin-right: 0;
+    top: auto;
+    bottom: 115%;
   }
 
   .intro-stage .gaze-label--right {
-    right: -2%;
-    top: auto;
-    bottom: -14%;
+    left: auto;
+    right: -4%;
+    margin-left: 0;
+    top: 115%;
   }
 
   .intro-stage .gaze-label--low {
+    right: auto;
     left: 4%;
-    bottom: -30%;
+    margin-right: 0;
+    top: 120%;
   }
 }
 
@@ -282,16 +300,20 @@ a:focus-visible {
   transform-origin: center;
 }
 
+/* Mini rec card: friend line as a header, big poster underneath. The
+   card sizes itself to the name-and-title line; the poster fills that
+   width at its natural 2:3 ratio. */
 .gaze-label {
   position: absolute;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
-  padding: 8px 14px 8px 8px;
+  width: max-content;
+  padding: 8px;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  box-shadow: 0 4px 14px rgba(36, 26, 32, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(36, 26, 32, 0.1);
   font-size: 0.85rem;
   font-weight: 500;
   white-space: nowrap;
@@ -299,29 +321,23 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.gaze-label--left {
-  left: 0;
-  top: 6%;
+.label-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
 }
 
-.gaze-label--right {
-  right: 0;
-  top: 20%;
-}
-
-.gaze-label--low {
-  top: auto;
-  bottom: 4%;
-  left: 6%;
-}
-
-/* Show poster: a little taller than the avatar, 2:3 poster ratio. */
 .label-poster {
-  width: 20px;
-  height: 30px;
-  border-radius: 4px;
+  /* width: 0 keeps the image's intrinsic 315px out of the card's
+     max-content sizing; min-width stretches it back to the card width
+     set by the header line. */
+  width: 0;
+  min-width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
-  flex: none;
+  border-radius: 8px;
 }
 
 .label-avatar {
@@ -330,6 +346,56 @@ a:focus-visible {
   border-radius: 50%;
   object-fit: cover;
   flex: none;
+}
+
+/* Card positions in the in-page hero. Small screens first: the cards
+   must never cover the word, and at page top there is only ~88px above
+   the lockup (not enough for a card), so they all sit BELOW the word —
+   left glances hug the left edge, the right glance the right edge.
+   From 900px up they sit fully beside the word instead. */
+.gaze-label--left {
+  left: 0;
+  top: 105%;
+}
+
+.gaze-label--right {
+  right: 0;
+  top: 105%;
+}
+
+.gaze-label--low {
+  left: 8%;
+  top: 112%;
+}
+
+@media (max-width: 899px) {
+  /* One type size down so the below-the-word cards stay compact. */
+  .hero .gaze-label {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .gaze-label--left {
+    left: auto;
+    right: 100%;
+    margin-right: 16px;
+    top: -25%;
+  }
+
+  .gaze-label--right {
+    right: auto;
+    left: 100%;
+    margin-left: 16px;
+    top: -25%;
+  }
+
+  .gaze-label--low {
+    left: auto;
+    right: 100%;
+    margin-right: 16px;
+    top: 15%;
+  }
 }
 
 .strapline {
@@ -541,19 +607,20 @@ a:focus-visible {
     text-align: center;
   }
 
-  /* Labels sit close to the eyes so they do not overflow. */
+  /* Smaller cards so they do not overflow narrow screens. */
   .gaze-label {
     font-size: 0.75rem;
-    padding: 6px 10px 6px 6px;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 12px;
+  }
+
+  .label-header {
+    gap: 6px;
   }
 
   .label-avatar {
     width: 20px;
     height: 20px;
-  }
-
-  .label-poster {
-    width: 17px;
-    height: 26px;
   }
 }
