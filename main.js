@@ -172,13 +172,15 @@ function enableEyeFollow(container) {
    First-visit intro / hero animation
    The head script decides pre-paint whether the intro plays
    (first visit or ?intro, never with reduced motion) and flags
-   it with .intro-pending on <html>. Exactly one of these runs:
+   it with .intro-pending on <html>.
 
-   - Intro: the lockup plays its sequence full screen in the
-     overlay, then FLIPs onto the hero's measured position; the
-     hero itself stays in its static rest pose underneath so the
-     swap is invisible, and it does NOT re-dart.
-   - Hero: the same sequence plays in place, as always.
+   - Intro visits: the lockup plays its sequence full screen in
+     the overlay, then FLIPs onto the hero's measured position;
+     the hero stays in its static rest pose underneath so the
+     swap is invisible, and it never re-darts.
+   - All other visits: the hero renders static in the resting
+     eyes-left pose — no appear, no darts, no labels. Just the
+     ambient blink and the hover eye-follow.
    ============================================================ */
 const INTRO_FLAG = "seen-intro-seen";
 const playIntro = document.documentElement.classList.contains("intro-pending");
@@ -197,13 +199,13 @@ function markIntroSeen() {
   if (!heroSvg) return;
 
   if (!playIntro) {
-    appearAsOne(heroSvg);
-    runGaze(heroLockup);
-    runLabelFlashes(heroLockup);
+    // Repeat visits (and any no-intro fallback): the full eye sequence
+    // (appear, darts, rec labels) only ever plays inside the first-visit
+    // intro, so the hero renders immediately in its resting eyes-left
+    // pose. Only the ambient blink and the hover eye-follow run, and the
+    // follow can arm at once since no darts will touch the irises.
     startBlink(heroLockup);
-    // Arm the hover-follow only once the dart sequence has settled
-    // (darts end at ~4250ms), so the two never fight over the irises.
-    window.setTimeout(() => enableEyeFollow(heroLockup), 4300);
+    enableEyeFollow(heroLockup);
     return;
   }
 

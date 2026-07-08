@@ -286,6 +286,13 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* No Skip control on narrow/touch widths; the intro just plays. */
+@media (max-width: 600px) {
+  .intro-skip {
+    display: none;
+  }
+}
+
 /* ── Hero ──────────────────────────────────────────────────── */
 
 .hero {
