@@ -556,14 +556,12 @@ a:focus-visible {
   color: var(--muted);
 }
 
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
+/* App icon sits centered above the copyright line. The column gap on
+   .footer-inner provides the space beneath it. */
 .footer-icon {
-  border-radius: 7px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
 }
 
 .footer-links {
