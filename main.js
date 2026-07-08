@@ -119,6 +119,56 @@ function startBlink(container) {
 }
 
 /* ============================================================
+   Hover eye-follow
+   After the intro/darts have finished, hovering a top button
+   makes the irises glance down toward it (App Store sits
+   lower-left, Android lower-right), returning to the resting
+   eyes-left pose on leave. Base-style transforms + the CSS
+   .iris transition, so it composes cleanly with the WAAPI
+   blink and never runs alongside the dart sequence.
+
+   Targets are centre-relative (via data-center-dx/dy) and stay
+   well inside the eye whites: the iris centre may travel within
+   roughly an ellipse of 32.7 x 17.6 units around the sclera
+   centre before the iris edge touches the white's edge, and
+   (±14, +10) uses about half of that in each axis.
+   ============================================================ */
+function enableEyeFollow(container) {
+  if (!window.matchMedia("(hover: hover)").matches) return;
+
+  const irises = container.querySelectorAll(".iris");
+  const buttons = document.querySelectorAll(".cta-row .btn--store");
+  if (!irises.length || buttons.length < 2) return;
+
+  const FOLLOW_X = 14;
+  const FOLLOW_Y = 10;
+
+  function look(x, y) {
+    irises.forEach((iris) => {
+      const dx = parseFloat(iris.dataset.centerDx) || 0;
+      const dy = parseFloat(iris.dataset.centerDy) || 0;
+      iris.style.transform = `translate(${dx + x}px, ${dy + y}px)`;
+    });
+  }
+
+  function rest() {
+    irises.forEach((iris) => {
+      iris.style.transform = "";
+    });
+  }
+
+  const aims = [
+    { x: -FOLLOW_X, y: FOLLOW_Y }, // App Store button, lower-left
+    { x: FOLLOW_X, y: FOLLOW_Y }, // Android button, lower-right
+  ];
+  buttons.forEach((btn, i) => {
+    const aim = aims[i];
+    btn.addEventListener("mouseenter", () => look(aim.x, aim.y));
+    btn.addEventListener("mouseleave", rest);
+  });
+}
+
+/* ============================================================
    First-visit intro / hero animation
    The head script decides pre-paint whether the intro plays
    (first visit or ?intro, never with reduced motion) and flags
@@ -151,6 +201,9 @@ function markIntroSeen() {
     runGaze(heroLockup);
     runLabelFlashes(heroLockup);
     startBlink(heroLockup);
+    // Arm the hover-follow only once the dart sequence has settled
+    // (darts end at ~4250ms), so the two never fight over the irises.
+    window.setTimeout(() => enableEyeFollow(heroLockup), 4300);
     return;
   }
 
@@ -191,6 +244,8 @@ function markIntroSeen() {
     overlay.remove();
     document.documentElement.classList.remove("intro-pending");
     startBlink(heroLockup);
+    // The hero never darted on an intro visit, so the irises are free.
+    enableEyeFollow(heroLockup);
   }
 
   // FLIP handoff: measure where the hero lockup really is, animate the

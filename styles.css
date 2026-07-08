@@ -118,9 +118,19 @@ body {
   color: #fff;
 }
 
-.btn--store:hover {
-  background: #1d1d1f;
-  border-color: #1d1d1f;
+.btn--store {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Hover-capable devices only, so the lift can't stick after a tap. */
+@media (hover: hover) {
+  .btn--store:hover {
+    background: #1d1d1f;
+    border-color: #1d1d1f;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(36, 26, 32, 0.28);
+  }
 }
 
 .btn-apple-logo {
@@ -298,6 +308,13 @@ a:focus-visible {
 .eye {
   transform-box: fill-box;
   transform-origin: center;
+}
+
+/* Smooths the hover eye-follow (main.js sets inline transforms). The
+   dart animations are WAAPI and override base styles, so this
+   transition never affects them. */
+.iris {
+  transition: transform 0.25s ease;
 }
 
 /* Mini rec card: friend line as a header, big poster underneath. The
