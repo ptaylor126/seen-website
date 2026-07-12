@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seen — A recommendation for you</title>
+  <meta name="description" content="A friend recommended you something to watch on Seen — movie and TV recommendations from friends you trust, not an algorithm." />
+  <!-- Deliberately not indexed: every /r/ URL is a private invite. -->
+  <meta name="robots" content="noindex" />
+
+  <!-- Link sharing: the site's GENERIC card. Per-rec previews (the poster
+       in the iMessage bubble) need per-token server-rendered meta, which
+       GitHub Pages can't do — the known deferred hosting item. -->
+  <meta property="og:title" content="Seen — A recommendation for you" />
+  <meta property="og:description" content="A friend picked something out for you to watch. See what it is on Seen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://seenrecs.com/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Seen — A recommendation for you" />
+  <meta name="twitter:description" content="A friend picked something out for you to watch. See what it is on Seen." />
+  <meta name="twitter:image" content="https://seenrecs.com/assets/og-image.png" />
+
+  <link rel="icon" type="image/png" href="../assets/icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png" />
+
+  <!-- This page loads from a text-message tap: keep the critical path
+       short. Fonts + shared stylesheet match the main site; preconnects
+       cover the two hosts the page will hit next (rec data, poster). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://xhzrsdgrgimlrdnyzidr.supabase.co" />
+  <link rel="preconnect" href="https://image.tmdb.org" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+
+  <style>
+    /* Page-scoped layout on top of the shared tokens/buttons. The rec is
+       the whole page: one centered column, poster leading. */
+    .rec-page {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+
+    .rec-poster {
+      width: 200px;
+      aspect-ratio: 2 / 3;
+      border-radius: 16px;
+      background: var(--wash-deep);
+      object-fit: cover;
+      box-shadow: 0 18px 40px rgba(36, 26, 32, 0.22);
+    }
+    /* Poster-shaped skeleton until the fetch resolves (or when a rec has
+       no poster). The shimmer respects reduced motion. */
+    .rec-poster--skeleton {
+      animation: rec-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes rec-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rec-poster--skeleton { animation: none; }
+    }
+
+    .rec-eyebrow {
+      margin-top: 28px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--plum);
+    }
+
+    .rec-title {
+      margin-top: 6px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      max-width: 22ch;
+    }
+    .rec-year {
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* The note — the sender's own words, styled as the personal message
+       it is (mirrors the app's pull-quote treatment). */
+    .rec-note {
+      margin-top: 18px;
+      max-width: 34ch;
+      font-size: 1.25rem;
+      line-height: 1.45;
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .rec-cta {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .rec-claimed-caption {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .rec-footer {
+      margin-top: 44px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .rec-footer a {
+      color: var(--plum);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Text placeholders while loading — fixed-size blocks so the layout
+       doesn't jump when the real strings land. */
+    .rec-line-skeleton {
+      display: inline-block;
+      border-radius: 6px;
+      background: var(--wash-deep);
+      color: transparent;
+      user-select: none;
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="rec-page" id="rec-page">
+    <!-- LOADING -->
+    <section id="state-loading" aria-label="Loading recommendation">
+      <div class="rec-page" style="min-height:auto;padding:0;">
+        <div class="rec-poster rec-poster--skeleton" role="presentation"></div>
+        <p class="rec-eyebrow"><span class="rec-line-skeleton">Someone recommends</span></p>
+        <h1 class="rec-title"><span class="rec-line-skeleton">A title goes here</span></h1>
+      </div>
+    </section>
+
+    <!-- HAPPY PATH + CLAIMED (same layout; CTA block swaps) -->
+    <section id="state-rec" hidden>
+      <div class="rec-page" style="min-height:auto;padding:0;">
+        <img class="rec-poster" id="rec-poster" alt="" />
+        <p class="rec-eyebrow" id="rec-eyebrow"></p>
+        <h1 class="rec-title">
+          <span id="rec-title"></span>
+          <span class="rec-year" id="rec-year"></span>
+        </h1>
+        <p class="rec-note" id="rec-note" hidden></p>
+
+        <div class="rec-cta">
+          <p class="rec-claimed-caption" id="rec-claimed-caption" hidden>
+            This one's already been added on Seen.
+          </p>
+          <a class="btn btn--store" id="cta-ios" href="https://apps.apple.com/app/id6775920785">
+            <svg class="btn-apple-logo" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true" focusable="false"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105.6-57-155.5-127C46.7 790.7 0 663 0 541.8c0-194.4 126.4-297.5 250.8-297.5 66.1 0 121.2 43.4 162.7 43.4 39.5 0 101.1-46 176.3-46 28.5 0 130.9 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
+            <span id="cta-ios-label">See it on Seen</span>
+          </a>
+          <!-- Android tap → the main site's existing email-capture section
+               (closed testing; no public Play listing yet). -->
+          <a class="btn btn--store" id="cta-android" href="../#android" hidden>
+            <img class="btn-google-logo" src="../assets/google-g.png" alt="" width="19" height="19" />
+            <span>Get notified on Android</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT FOUND / INVALID -->
+    <section id="state-notfound" hidden>
+      <div class="rec-page" style="min-height:auto;padding:0;">
+        <p class="rec-eyebrow">Seen</p>
+        <h1 class="rec-title">This link isn&rsquo;t valid</h1>
+        <p class="rec-note" style="font-style:normal;">
+          It may have been revoked — but Seen is still where friends tell
+          you what&rsquo;s worth watching.
+        </p>
+        <div class="rec-cta">
+          <a class="btn btn--store" id="nf-ios" href="https://apps.apple.com/app/id6775920785">
+            <svg class="btn-apple-logo" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true" focusable="false"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105.6-57-155.5-127C46.7 790.7 0 663 0 541.8c0-194.4 126.4-297.5 250.8-297.5 66.1 0 121.2 43.4 162.7 43.4 39.5 0 101.1-46 176.3-46 28.5 0 130.9 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
+            <span>Download on the App&nbsp;Store</span>
+          </a>
+          <a class="btn btn--store" id="nf-android" href="../#android" hidden>
+            <img class="btn-google-logo" src="../assets/google-g.png" alt="" width="19" height="19" />
+            <span>Get notified on Android</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <p class="rec-footer">
+      <a href="../">Seen</a> &mdash; what to watch, from friends you trust
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      var FN_URL =
+        "https://xhzrsdgrgimlrdnyzidr.supabase.co/functions/v1/get-pending-rec";
+      var POSTER_BASE = "https://image.tmdb.org/t/p/w342";
+      var isAndroid = /android/i.test(navigator.userAgent);
+
+      function show(id) {
+        ["state-loading", "state-rec", "state-notfound"].forEach(function (s) {
+          document.getElementById(s).hidden = s !== id;
+        });
+      }
+
+      // Android: swap the store CTA for the email-capture link in both
+      // terminal states. (Desktop keeps the App Store button — it's the
+      // truthful CTA and the page is overwhelmingly a phone destination.)
+      if (isAndroid) {
+        document.getElementById("cta-ios").hidden = true;
+        document.getElementById("cta-android").hidden = false;
+        document.getElementById("nf-ios").hidden = true;
+        document.getElementById("nf-android").hidden = false;
+      }
+
+      var token = new URLSearchParams(location.search).get("t") || "";
+      if (!/^[A-Za-z0-9_-]{16}$/.test(token)) {
+        show("state-notfound");
+        return;
+      }
+
+      fetch(FN_URL + "?token=" + encodeURIComponent(token))
+        .then(function (res) {
+          if (res.status === 404) throw new Error("not_found");
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function (rec) {
+          var poster = document.getElementById("rec-poster");
+          if (rec.posterPath) {
+            poster.src = POSTER_BASE + rec.posterPath;
+            poster.alt = rec.title ? rec.title + " poster" : "Poster";
+          } else {
+            poster.className = "rec-poster rec-poster--skeleton";
+            poster.removeAttribute("src");
+          }
+
+          var first = (rec.senderName || "A friend").split(/\s+/)[0];
+          document.getElementById("rec-eyebrow").textContent =
+            first + " recommends";
+          document.getElementById("rec-title").textContent =
+            rec.title || (rec.mediaType === "tv" ? "A show" : "A film");
+          document.getElementById("rec-year").textContent = rec.year
+            ? " " + rec.year
+            : "";
+
+          if (rec.note) {
+            var note = document.getElementById("rec-note");
+            note.textContent = "“" + rec.note + "”";
+            note.hidden = false;
+          }
+
+          if (rec.claimed) {
+            document.getElementById("rec-claimed-caption").hidden = false;
+            document.getElementById("cta-ios-label").textContent =
+              "Open Seen";
+          }
+
+          document.title = rec.title
+            ? "Seen — " + first + " recommends " + rec.title
+            : document.title;
+          show("state-rec");
+        })
+        .catch(function () {
+          // Includes network failures: the invalid-link state still gives
+          // the visitor a working path to the app either way.
+          show("state-notfound");
+        });
+    })();
+  </script>
+</body>
+</html>
