@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Seen — A recommendation for you</title>
-  <meta name="description" content="A friend recommended you something to watch on Seen — movie and TV recommendations from friends you trust, not an algorithm." />
+  <title>Seen · A recommendation for you</title>
+  <meta name="description" content="A friend recommended you something to watch on Seen. Movie and TV recommendations from friends you trust, not an algorithm." />
   <!-- Deliberately not indexed: every /r/ URL is a private invite. -->
   <meta name="robots" content="noindex" />
 
   <!-- Link sharing: the site's GENERIC card. Per-rec previews (the poster
        in the iMessage bubble) need per-token server-rendered meta, which
        GitHub Pages can't do — the known deferred hosting item. -->
-  <meta property="og:title" content="Seen — A recommendation for you" />
+  <meta property="og:title" content="Seen · A recommendation for you" />
   <meta property="og:description" content="A friend picked something out for you to watch. See what it is on Seen." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://seenrecs.com/assets/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Seen — A recommendation for you" />
+  <meta name="twitter:title" content="Seen · A recommendation for you" />
   <meta name="twitter:description" content="A friend picked something out for you to watch. See what it is on Seen." />
   <meta name="twitter:image" content="https://seenrecs.com/assets/og-image.png" />
 
@@ -185,8 +185,8 @@
         <p class="rec-eyebrow">Seen</p>
         <h1 class="rec-title">This link isn&rsquo;t valid</h1>
         <p class="rec-note" style="font-style:normal;">
-          It may have been revoked — but Seen is still where friends tell
-          you what&rsquo;s worth watching.
+          It may have been revoked. Seen is still where friends tell you
+          what&rsquo;s worth watching.
         </p>
         <div class="rec-cta">
           <a class="btn btn--store" id="nf-ios" href="https://apps.apple.com/app/id6775920785">
@@ -202,7 +202,7 @@
     </section>
 
     <p class="rec-footer">
-      <a href="../">Seen</a> &mdash; what to watch, from friends you trust
+      <a href="../">Seen</a> · what to watch, from friends you trust
     </p>
   </main>
 
@@ -273,7 +273,7 @@
           }
 
           document.title = rec.title
-            ? "Seen — " + first + " recommends " + rec.title
+            ? "Seen · " + first + " recommends " + rec.title
             : document.title;
           show("state-rec");
         })
