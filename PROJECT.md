@@ -13,13 +13,12 @@ Plain static site — HTML, CSS, vanilla JS, no framework, no build step. Geist 
 Geist Mono load from Google Fonts (self-hosting is a noted later optimisation).
 
 ```
-index.html    single page: intro overlay shell, hero, screenshots, why, Android
-              signup, footer. All SEO/OG/JSON-LD tags in <head>, plus a tiny
-              pre-paint inline script that decides whether the intro plays.
+index.html    single page: intro overlay shell, hero, screenshots, why, footer.
+              All SEO/OG/JSON-LD tags in <head>, plus a tiny pre-paint inline
+              script that decides whether the intro plays.
 styles.css    plum design tokens at the top (:root), then per-section styles.
-main.js       Supabase anon key + waitlist URL at the top, then: lockup animation
-              helpers, hover eye-follow, first-visit intro + FLIP handoff, scroll
-              reveals, Android CTA scroll, waitlist form submit.
+main.js       lockup animation helpers, hover eye-follow, first-visit intro +
+              FLIP handoff, scroll reveals.
 assets/       wordwitheyes.svg (real wordmark, inlined into index.html — the copy
               in the HTML is the live one), icon.png + derived favicon-32 /
               apple-touch-icon, og-image.png (1200x630 share image), app
@@ -89,8 +88,8 @@ manually.
   cream-background/terracotta-accent look was explicitly rejected as the generic
   AI-default aesthetic — don't drift back to it.
 - **Black download buttons** (both, matched width) like the app's store buttons;
-  Apple logo on the App Store button, Google G (not a Play badge) on the Android
-  one — it reveals the email signup, and must not look like a live store link.
+  Apple logo on the App Store button, Google G on the Google Play one. Both are
+  live store links (Play listing: com.paultaylor.seen).
 - **Real content over placeholders**: real friend avatars and show posters in
   the hero rec cards, real app screenshots. Poster art is TMDB-sourced, hence
   the required TMDB attribution + logo in the footer (the line "This product

@@ -1,16 +1,5 @@
 "use strict";
 
-/* ============================================================
-   PASTE YOUR SUPABASE ANON KEY BELOW.
-   This is the PUBLIC anon key (same value as the app's
-   EXPO_PUBLIC_SUPABASE_ANON_KEY). It is safe to ship in page
-   source: RLS on the waitlist table only allows anonymous
-   INSERT, so the key cannot read anything.
-   ============================================================ */
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoenJzZGdyZ2ltbHJkbnl6aWRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5OTgzNTMsImV4cCI6MjA5NDU3NDM1M30.4XG97UWpLtFpDROe7Xf8Z8zJfcEMT49Hn5Qg0lOy_wQ";
-
-const WAITLIST_URL = "https://xhzrsdgrgimlrdnyzidr.supabase.co/rest/v1/waitlist";
-
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ============================================================
@@ -325,91 +314,5 @@ function markIntroSeen() {
   targets.forEach((el) => {
     el.classList.add("reveal");
     observer.observe(el);
-  });
-})();
-
-/* ============================================================
-   Android CTA: scroll to the signup section
-   The form is always visible there, so the hero button just
-   takes you to it and focuses the email field.
-   ============================================================ */
-(function androidCta() {
-  const heroCta = document.getElementById("android-cta");
-  const emailInput = document.getElementById("signup-email");
-  const section = document.getElementById("android");
-  if (!heroCta || !section || !emailInput) return;
-
-  heroCta.addEventListener("click", () => {
-    section.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-    emailInput.focus({ preventScroll: true });
-  });
-})();
-
-/* ============================================================
-   Waitlist form → Supabase (site PRD §7)
-   ============================================================ */
-(function waitlistForm() {
-  const form = document.getElementById("signup-form");
-  const emailInput = document.getElementById("signup-email");
-  const honeypot = document.getElementById("signup-website");
-  const submitBtn = document.getElementById("signup-submit");
-  const status = document.getElementById("signup-status");
-  if (!form) return;
-
-  const SUCCESS_COPY = "You are on the list. We will tell you when Android lands.";
-  const ERROR_COPY = "Something went wrong. Try again.";
-
-  function setStatus(message, isError) {
-    status.textContent = message;
-    status.classList.toggle("is-error", Boolean(isError));
-  }
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    // Honeypot filled → bot. Drop silently (pretend it worked).
-    if (honeypot && honeypot.value !== "") {
-      setStatus(SUCCESS_COPY, false);
-      form.reset();
-      return;
-    }
-
-    const email = emailInput.value.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setStatus("Enter a valid email address.", true);
-      emailInput.focus();
-      return;
-    }
-
-    submitBtn.disabled = true;
-    setStatus("", false);
-
-    try {
-      const res = await fetch(WAITLIST_URL, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-          // return=minimal matters: anon has no SELECT policy, so
-          // reading the inserted row back would error.
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({ email: email, source: "website" }),
-      });
-
-      // 409 = unique violation = already signed up. Treat as success;
-      // never reveal whether an email is on the list.
-      if (res.ok || res.status === 409) {
-        setStatus(SUCCESS_COPY, false);
-        form.reset();
-      } else {
-        setStatus(ERROR_COPY, true);
-      }
-    } catch (err) {
-      setStatus(ERROR_COPY, true);
-    } finally {
-      submitBtn.disabled = false;
-    }
   });
 })();

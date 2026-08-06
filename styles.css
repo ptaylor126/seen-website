@@ -82,7 +82,6 @@ body {
 
 /* Running copy: avoid a single orphaned word on the last line. */
 .why-copy,
-.android-copy,
 .shot figcaption,
 .footer-tmdb p {
   text-wrap: pretty;
@@ -156,7 +155,6 @@ body {
 }
 
 .btn:focus-visible,
-.signup-input:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--plum);
   outline-offset: 3px;
@@ -515,60 +513,6 @@ a:focus-visible {
   margin-top: 28px;
   font-size: clamp(1rem, 2vw, 1.15rem);
   color: var(--muted);
-}
-
-/* ── Android signup ────────────────────────────────────────── */
-
-.android-copy {
-  color: var(--muted);
-  margin-bottom: 24px;
-}
-
-.signup-form {
-  max-width: 440px;
-  margin: 0 auto;
-}
-
-.signup-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-}
-
-.signup-input {
-  flex: 1 1 220px;
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  padding: 14px 20px;
-  border: 2px solid var(--line);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--ink);
-}
-
-.signup-input:focus {
-  border-color: var(--plum);
-  outline: none;
-}
-
-/* Honeypot: visually gone but still in the DOM for bots to find. */
-.hp-field {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.signup-status {
-  margin-top: 16px;
-  font-size: 0.95rem;
-  min-height: 1.5em;
-}
-
-.signup-status.is-error {
-  color: #A03232;
 }
 
 /* ── Footer ────────────────────────────────────────────────── */
