@@ -9,22 +9,26 @@ the original spec.
 
 ## Stack and structure
 
-Plain static site — HTML, CSS, vanilla JS, no framework, no build step. Geist and
-Geist Mono load from Google Fonts (self-hosting is a noted later optimisation).
+Plain static site — HTML, CSS, vanilla JS, no framework, no build step. Bricolage
+Grotesque (display) and Manrope (body) load from Google Fonts as variable faces,
+matching the app (self-hosting is a noted later optimisation).
 
 ```
 index.html    single page: intro overlay shell, hero, screenshots, why, footer.
               All SEO/OG/JSON-LD tags in <head>, plus a tiny pre-paint inline
               script that decides whether the intro plays.
-styles.css    plum design tokens at the top (:root), then per-section styles.
+styles.css    V2 navy design tokens at the top (:root), then per-section styles.
 main.js       lockup animation helpers, hover eye-follow, first-visit intro +
               FLIP handoff, scroll reveals.
 assets/       wordwitheyes.svg (real wordmark, inlined into index.html — the copy
-              in the HTML is the live one), icon.png + derived favicon-32 /
-              apple-touch-icon, og-image.png (1200x630 share image), app
-              screenshots (screenshot-*.png, device-framed with transparent
-              rounded corners), friend avatars (paul/bobby/bigron.png), show
-              posters (poster-*.png, 315x473), google-g.png, tmdb-logo.svg.
+              in the HTML is the live one, and it is the copy that carries the V2
+              fills; the .svg file itself is still the plum Figma export),
+              icon.png (copied from the app's navy assets/icon.png) + derived
+              favicon-32 / apple-touch-icon, og-image.png (1200x630 share image,
+              navy), app screenshots (screenshot-*.png, 2000x4112 navy V2,
+              device-framed with transparent rounded corners), friend avatars
+              (paul/bobby/bigron.png), show posters (poster-*.png, 315x473),
+              google-g.png, tmdb-logo.svg.
 CNAME         seenrecs.com (GitHub Pages custom domain)
 robots.txt    allow all, points at sitemap.xml
 sitemap.xml   the single URL https://seenrecs.com/
@@ -84,12 +88,26 @@ manually.
 
 ## Key decisions and why
 
-- **Plum brand system** (`--plum #7A3960` etc. in `styles.css`), Geist type. The
-  cream-background/terracotta-accent look was explicitly rejected as the generic
-  AI-default aesthetic — don't drift back to it.
-- **Black download buttons** (both, matched width) like the app's store buttons;
-  Apple logo on the App Store button, Google G on the Google Play one. Both are
-  live store links (Play listing: com.paultaylor.seen).
+- **V2 navy brand system** (2026-08-09), replacing the plum-on-cream V1. Tokens in
+  `styles.css` (`--ground #0B0D26`, `--surface #151838`, `--accent #9D8DF0`,
+  `--text #E6E6E6`) are lifted **verbatim** from the app's `paletteV2` in
+  `seen/src/theme/theme.ts`. Don't tune them here in isolation — the whole point
+  is that the site and the app are one surface. The old cream/terracotta look was
+  already rejected as the generic AI-default aesthetic; don't drift back to it.
+- **White on the lavender accent is only 2.80:1** — filled accent elements take
+  dark `--on-accent` ink, never white. `--pupil` exists for the same reason: the
+  wordmark's letterforms carry the accent but its pupils must stay ground-dark,
+  or the eyes go purple (the app hit this too — see `animated-logo.tsx`).
+- **White download buttons** (both, matched width). The V1 black pills read as
+  holes punched in the navy; white is also the ground the full-colour Google G is
+  drawn for, and it keeps lavender exclusive to the wordmark so the hero has one
+  focal point. Apple logo on the App Store button, Google G on the Google Play
+  one. Both are live store links (Play listing: com.paultaylor.seen).
+- **Hairlines, not shadows, do the separating.** On navy a dark drop-shadow is
+  invisible, and the `--ground`→`--surface` step is deliberately subtle (1.11:1,
+  matching the app). So the "Why" band takes `border-block`, posters and
+  screenshots take a 1px `--line` frame (mirroring the app's `posterFrame`), and
+  the screenshot glow is lavender-tinted rather than black.
 - **Real content over placeholders**: real friend avatars and show posters in
   the hero rec cards, real app screenshots. Poster art is TMDB-sourced, hence
   the required TMDB attribution + logo in the footer (the line "This product
@@ -107,9 +125,14 @@ manually.
   reload won't replay the intro once the flag is set.
 - The form only collects. Nobody gets an email until you send one.
 - The wordmark SVG is inlined in `index.html` (the irises must be animatable
-  DOM nodes); `assets/wordwitheyes.svg` is the source of record. If it's ever
-  re-exported, re-inline it and keep the `.eye` / `.iris` / `.word-part` classes
-  and `data-center-dx/dy` attributes.
+  DOM nodes); `assets/wordwitheyes.svg` is the source of record for the *shapes*.
+  If it's ever re-exported, re-inline it and keep the `.eye` / `.iris` /
+  `.word-part` classes and `data-center-dx/dy` attributes — **and re-apply the V2
+  fills**, because the exported file is still the original plum artwork. The app
+  keeps its identical copy plum too and re-colours in code, so the two stay in
+  step. Correct fills: letterforms + the two `e`-slot rects `var(--accent)`,
+  pupils `var(--pupil)`; the `#D9D9D9` sclerae and the gold iris gradient are
+  unchanged (the app deliberately kept both).
 
 ## Open loose ends
 

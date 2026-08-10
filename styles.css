@@ -1,20 +1,36 @@
 /* ============================================================
    Seen — marketing site
-   Plum system tokens from the site PRD (§5).
+   V2 navy system. Values are lifted verbatim from the app's
+   paletteV2 (seen/src/theme/theme.ts) so the two surfaces stay
+   one brand — do not tune these here in isolation. Contrast on
+   ground: text 15.3:1, muted 7.64:1, accent 6.82:1.
    ============================================================ */
 
 :root {
-  --plum:       #7A3960;  /* accent, brand */
-  --plum-dark:  #5E2B4A;  /* hover */
-  --wash:       #E4CADB;  /* soft plum panels */
-  --wash-deep:  #EFE7EC;  /* icon background tone, section wash */
-  --ink:        #241A20;  /* near-black warm text */
-  --muted:      #6E6169;  /* secondary text */
-  --paper:      #FBF9FA;  /* page background, warm white */
-  --line:       #ECE3E8;  /* hairlines */
+  color-scheme: dark;
 
-  --font-sans: "Geist", system-ui, -apple-system, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+  --ground:      #0B0D26;  /* page canvas — the darkest navy */
+  --surface:     #151838;  /* cards, section bands, skeletons */
+  --surface-alt: #162954;  /* emphasis fills */
+  --accent:      #9D8DF0;  /* brand lavender */
+  --accent-hover:#8878DC;  /* accent stepped down */
+  --text:        #E6E6E6;  /* near-white */
+  --muted:       #9FA3B8;  /* secondary text */
+  /* The app's third text tier (textFaint #6B6F85) is deliberately NOT
+     carried over: the site has no consumer for it, and at 3.85:1 on
+     ground it would fail AA at the sizes here anyway. */
+  /* Dark ink FOR USE ON light/accent fills. White on accent is only
+     2.80:1 — never put white on the lavender. */
+  --on-accent:   #0B0D26;
+  --line:        rgba(230, 230, 230, 0.12);  /* hairlines */
+
+  /* The wordmark's eyes. Only the letterforms carry the brand colour;
+     the pupils are ground-dark ink. Sending all six fills to accent
+     turns the eyes purple — the app hit exactly this (animated-logo.tsx). */
+  --pupil:       #0B0D26;
+
+  --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --font-body:    "Manrope", system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -37,9 +53,9 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  background: var(--paper);
-  color: var(--ink);
+  font-family: var(--font-body);
+  background: var(--ground);
+  color: var(--text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -62,17 +78,20 @@ body {
   text-align: center;
 }
 
+/* The app's `overline` tier: body face, semibold, tracked uppercase.
+   Was Geist Mono — dropping mono also fixes /i/, which used this class
+   without ever loading the mono family. */
 .eyebrow {
-  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: var(--accent);
   margin-bottom: 12px;
 }
 
 .section h2 {
+  font-family: var(--font-display);
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -91,39 +110,43 @@ body {
 
 .btn {
   display: inline-block;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1;
   padding: 16px 28px;
   border-radius: 999px;
-  border: 2px solid var(--plum);
+  border: 2px solid var(--accent);
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
+/* Dark ink on the lavender, never white — see --on-accent. */
 .btn--primary {
-  background: var(--plum);
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .btn--primary:hover {
-  background: var(--plum-dark);
-  border-color: var(--plum-dark);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
-/* Hero download buttons: black like the app's store buttons, and a fixed
-   equal width so the pair lines up. White on black is 21:1 contrast. */
+/* Hero download buttons: white pills, and a fixed equal width so the pair
+   lines up. The old black pills read as holes punched in the navy. White
+   is also the ground the full-colour Google G is drawn for, and it keeps
+   the lavender exclusive to the wordmark so the hero has one focal point.
+   Navy on white is 15.9:1. */
 .btn--store {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 310px;
-  background: #000;
-  border-color: #000;
-  color: #fff;
+  background: #fff;
+  border-color: #fff;
+  color: var(--on-accent);
 }
 
 .btn--store {
@@ -134,10 +157,10 @@ body {
 /* Hover-capable devices only, so the lift can't stick after a tap. */
 @media (hover: hover) {
   .btn--store:hover {
-    background: #1d1d1f;
-    border-color: #1d1d1f;
+    background: #E4E2F5;
+    border-color: #E4E2F5;
     transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(36, 26, 32, 0.28);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
   }
 }
 
@@ -156,7 +179,7 @@ body {
 
 .btn:focus-visible,
 a:focus-visible {
-  outline: 3px solid var(--plum);
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -190,10 +213,12 @@ a:focus-visible {
   visibility: hidden;
 }
 
+/* Must be the page ground: this backdrop fades away to reveal the site,
+   so any other colour makes the first visit flash. */
 .intro-bg {
   position: absolute;
   inset: 0;
-  background: var(--paper);
+  background: var(--ground);
 }
 
 .intro-stage {
@@ -268,19 +293,19 @@ a:focus-visible {
   border: none;
   padding: 8px 18px;
   border-radius: 999px;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--muted);
   cursor: pointer;
 }
 
 .intro-skip:hover {
-  color: var(--ink);
+  color: var(--text);
   text-decoration: underline;
 }
 
 .intro-skip:focus-visible {
-  outline: 3px solid var(--plum);
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -341,10 +366,10 @@ a:focus-visible {
   gap: 8px;
   width: max-content;
   padding: 8px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(36, 26, 32, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
   font-size: 0.85rem;
   font-weight: 500;
   white-space: nowrap;
@@ -369,6 +394,9 @@ a:focus-visible {
   aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: 8px;
+  /* Dark poster art on a dark card otherwise dissolves at the edge —
+     the same hairline frame the app applies to every poster. */
+  border: 1px solid var(--line);
 }
 
 .label-avatar {
@@ -430,11 +458,12 @@ a:focus-visible {
 }
 
 .strapline {
+  font-family: var(--font-display);
   font-size: clamp(1.35rem, 3.4vw, 1.75rem);
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.3;
-  color: var(--ink);
+  color: var(--text);
   margin: 24px auto 32px;
   max-width: 30em;
   text-wrap: balance;
@@ -473,13 +502,15 @@ a:focus-visible {
   margin-top: 36px;
 }
 
+/* The navy V2 exports sit on a navy page, so a dark drop-shadow does
+   nothing. A soft lavender-tinted glow separates the device from the
+   ground instead; drop-shadow (not box-shadow) still follows the
+   transparent rounded corners rather than boxing them. */
 .shot-img {
   display: block;
   width: 100%;
   height: auto;
-  /* The exports have transparent rounded corners, so drop-shadow follows
-     the shape; box-shadow would draw a rectangle behind the corners. */
-  filter: drop-shadow(0 18px 30px rgba(36, 26, 32, 0.16));
+  filter: drop-shadow(0 14px 34px rgba(157, 141, 240, 0.22));
 }
 
 .shot figcaption {
@@ -490,9 +521,13 @@ a:focus-visible {
 
 /* ── Why / how it works ────────────────────────────────────── */
 
+/* The surface step above ground is deliberately subtle (1.11:1, matching
+   the app), which on a wide viewport is too quiet to read as a band on
+   its own — hairlines give it the edges the tonal step can't. */
 .section--why {
   max-width: none;
-  background: var(--wash-deep);
+  background: var(--surface);
+  border-block: 1px solid var(--line);
 }
 
 /* Centered statement blocks; larger than body text so the section
@@ -502,7 +537,7 @@ a:focus-visible {
   margin: 0 auto;
   font-size: clamp(1.15rem, 2.4vw, 1.4rem);
   line-height: 1.55;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .why-copy strong {
@@ -550,7 +585,7 @@ a:focus-visible {
 }
 
 .footer-links a {
-  color: var(--plum);
+  color: var(--accent);
   text-decoration: none;
 }
 
