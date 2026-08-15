@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "7HHDW86546.com.paultaylor.seen",
+        "paths": ["/i/", "/i/*", "/r/", "/r/*"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.paultaylor.seen",
+      "sha256_cert_fingerprints": [
+        "5B:C3:09:26:BA:F7:F5:F9:15:93:37:9F:C0:A2:3A:EA:4E:F1:E1:D4:65:D4:8B:F9:39:B3:21:0A:9A:40:29:D1"
+      ]
+    }
+  }
+]
