@@ -49,7 +49,7 @@ footer a { color: var(--muted); }
   <div class="wrap">
     <header>
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: June 2026</p>
+      <p class="updated">Last updated: October 2026</p>
     </header>
 
     <div class="card">
@@ -57,18 +57,19 @@ footer a { color: var(--muted); }
 
       <h2>Information We Collect</h2>
       <p>When you use Seen, we collect:</p>
-      <p><strong>Account information:</strong> Your Apple ID (via Sign in with Apple) or Google account (via Sign in with Google), display name, handle, and avatar.</p>
-      <p><strong>Profile information:</strong> Information you choose to add, including titles you've watched, are watching, want to watch, ratings, and notes.</p>
-      <p><strong>Social information:</strong> Your friend connections, recommendations sent and received, and any private or public settings you choose for items.</p>
-      <p><strong>Device information:</strong> Push notification tokens (if you opt into notifications), device type, and OS version for crash reporting purposes.</p>
-      <p><strong>Usage data:</strong> Basic analytics about how you use the app (which features you use, frequency of use) to help us improve the product.</p>
+      <p><strong>Account information:</strong> How you sign in: your email address and password, your Apple ID (via Sign in with Apple), or your Google account (via Sign in with Google). We store your email address. Your password is stored securely by our authentication provider and we can't see it. We also store your display name, handle, and avatar.</p>
+      <p><strong>Profile information:</strong> Your bio, if you add one, and how you heard about Seen, if you tell us.</p>
+      <p><strong>Your library:</strong> Titles you've watched, are watching, or want to watch, and your ratings. For TV shows, the episodes you've marked watched and when you marked them.</p>
+      <p><strong>Things you write and send:</strong> Recommendations and their notes, written reviews, comments and reactions on recommendations, chats about titles, and requests for recommendations.</p>
+      <p><strong>Social information:</strong> Your friend connections, the people you've blocked, and the visibility you choose for each title in your library: visible to friends (the default) or private.</p>
+      <p><strong>Device information:</strong> Push notification tokens, if you turn on notifications.</p>
 
       <h2>How We Use Your Information</h2>
       <p>We use your information to:</p>
       <ul>
         <li>Provide the core features of the app (tracking titles, friend connections, recommendations)</li>
         <li>Send you notifications about friend activity (only with your permission)</li>
-        <li>Improve the app based on usage patterns</li>
+        <li>Improve the app based on feedback you send us</li>
         <li>Communicate with you about important changes</li>
       </ul>
 
@@ -76,32 +77,39 @@ footer a { color: var(--muted); }
       <p>We do not sell your information to third parties.</p>
       <p>We share information only:</p>
       <ul>
-        <li>With other users you've connected with as friends (visible profile information, titles you've added, ratings, unless marked private)</li>
-        <li>With service providers who help us run the app (Supabase for database hosting, TMDB for film and TV metadata, Apple and Google for authentication, Apple for push notifications)</li>
+        <li>With your friends. They can see your profile, the titles in your library that are visible to friends, your ratings of them, any reviews you've left visible to friends, and, for those shows, the episodes you've marked watched. They also see your latest activity and roughly when it happened, for example "Watching Severance" two days ago. Titles you've set to private are never shown.</li>
+        <li>With anyone who has an invite or recommendation link you've shared. Opening the link shows your display name, the title, and your note.</li>
+        <li>With service providers who help us run the app, listed below.</li>
         <li>When required by law</li>
       </ul>
 
       <h2>Third-Party Services</h2>
       <p>Seen uses the following third-party services:</p>
       <ul>
-        <li><strong>Supabase</strong> for authentication, database, and backend services</li>
-        <li><strong>TMDB (The Movie Database)</strong> for film and TV metadata</li>
-        <li><strong>Apple</strong> for Sign in with Apple authentication and push notifications</li>
-        <li><strong>Google</strong> for Sign in with Google authentication</li>
+        <li><strong>Supabase</strong> for sign-in, our database, and backend services</li>
+        <li><strong>TMDB (The Movie Database)</strong> for film and TV information. Posters and images load directly from TMDB's servers.</li>
+        <li><strong>Expo</strong> for delivering push notifications and app updates</li>
+        <li><strong>Apple</strong> for Sign in with Apple and push notifications on iPhone</li>
+        <li><strong>Google</strong> for Sign in with Google and push notifications on Android</li>
+        <li><strong>Resend</strong> for sending account emails, such as email verification and password resets</li>
       </ul>
       <p>Each service has its own privacy policy that governs their handling of your data.</p>
 
       <h2>Your Choices</h2>
       <p>You can:</p>
       <ul>
-        <li>Mark individual items as private so friends cannot see them</li>
+        <li>Set any title in your library to private so friends can't see it (titles are visible to friends by default)</li>
         <li>Remove friends at any time</li>
+        <li>Block a user. You and they can no longer see each other, and any friendship between you ends.</li>
         <li>Delete your account and all associated data</li>
         <li>Disable push notifications in your device settings</li>
       </ul>
 
       <h2>Account Deletion</h2>
-      <p>To delete your account, go to Profile, then Account, then Delete account. Deletion is immediate and permanent. Your account and all associated data, including your library, ratings, recommendations, friend connections, and photos, are removed and cannot be recovered.</p>
+      <p>To delete your account, go to Profile, then Account, then Delete account. Deletion is immediate and permanent, and cannot be undone.</p>
+      <p>Two things are kept. Recommendations you sent stay in the recipient's inbox with your name removed, and your note on them stays. Your handle is held for 90 days so nobody else can claim it, then released.</p>
+      <p>Everything else is deleted, including your profile, library, ratings, reviews, episodes, comments, reactions, chats, friend connections, photos, and feedback.</p>
+      <p>Chats are deleted for both people, so the person you were chatting with loses them too.</p>
 
       <h2>Data Security</h2>
       <p>We use industry-standard security measures to protect your data, including encryption in transit and at rest. However, no method of transmission over the internet is 100% secure.</p>
