@@ -31,7 +31,10 @@ assets/       wordwitheyes.svg (real wordmark, inlined into index.html — the c
               google-g.png, tmdb-logo.svg.
 CNAME         seenrecs.com (GitHub Pages custom domain)
 robots.txt    allow all, points at sitemap.xml
-sitemap.xml   the single URL https://seenrecs.com/
+sitemap.xml   the home page plus /privacy, /terms, /support and /delete-account
+privacy.html, terms.html, support.html, delete-account.html
+              the policy and help pages (self-contained, inline styles; served
+              at their clean addresses, see Hosting below).
 ```
 
 ## Hosting and domain
@@ -40,10 +43,14 @@ sitemap.xml   the single URL https://seenrecs.com/
   `CNAME` file; HTTPS enforced in the Pages settings.
 - DNS: apex A records to GitHub Pages' four IPs (185.199.108.153 / .109. / .110. /
   .111.), plus a `www` CNAME to the GitHub Pages host.
-- **Privacy and Terms are not in this repo.** They live in the app repo's `docs/`
-  and are hosted at `ptaylor126.github.io/seen/privacy.html` and
-  `.../terms.html`; the footer links out to them. Don't move them — the app links
-  to those URLs too.
+- **Privacy, Terms, Support and Delete account live here**, as `privacy.html`,
+  `terms.html`, `support.html` and `delete-account.html` at the repo root.
+  GitHub Pages serves each at its clean address: seenrecs.com/privacy, /terms,
+  /support and /delete-account. Keep those addresses stable: the app's sign-in
+  screen links to /privacy and /terms, and App Store Connect and Google Play
+  (privacy policy, support and account deletion URLs) point here too. They
+  moved from the app repo's GitHub Pages in October 2026, when that repo went
+  private.
 
 ## External setup
 
