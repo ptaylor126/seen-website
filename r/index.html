@@ -123,6 +123,19 @@
       font-size: 0.95rem;
       color: var(--muted);
     }
+    /* After installing: the store doesn't carry the rec into the app, so
+       this opens it there directly (the app's own seen:// link; iOS won't
+       open an app from a page on the app's own link domain). */
+    .rec-installed {
+      max-width: 30ch;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .rec-installed a {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
     .rec-footer {
       margin-top: 44px;
@@ -183,6 +196,10 @@
             <img class="btn-google-logo" src="../assets/google-g.png" alt="" width="19" height="19" />
             <span>Get it on Google Play</span>
           </a>
+          <p class="rec-installed" id="rec-installed">
+            Once Seen is installed, come back and
+            <a id="rec-open" href="seen://">tap here to open your rec</a>.
+          </p>
         </div>
       </div>
     </section>
@@ -243,6 +260,15 @@
         return;
       }
 
+      // Once installed: open the rec in the app (it claims it after
+      // sign-up). And the Play Store link carries the rec as its install
+      // referrer, for an app build that reads it on first open.
+      document.getElementById("rec-open").href =
+        "seen://r?t=" + encodeURIComponent(token);
+      document.getElementById("cta-android").href =
+        "https://play.google.com/store/apps/details?id=com.paultaylor.seen&referrer=" +
+        encodeURIComponent("seen_rec=" + token);
+
       fetch(FN_URL + "?token=" + encodeURIComponent(token))
         .then(function (res) {
           if (res.status === 404) throw new Error("not_found");
@@ -276,6 +302,7 @@
 
           if (rec.claimed) {
             document.getElementById("rec-claimed-caption").hidden = false;
+            document.getElementById("rec-installed").hidden = true;
             document.getElementById("cta-ios-label").textContent =
               "Open Seen";
           }
