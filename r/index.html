@@ -196,6 +196,9 @@
             <img class="btn-google-logo" src="../assets/google-g.png" alt="" width="19" height="19" />
             <span>Get it on Google Play</span>
           </a>
+          <p class="rec-installed" id="rec-copied" hidden>
+            We&rsquo;ve copied your rec link. Tap Paste when Seen opens.
+          </p>
           <p class="rec-installed" id="rec-installed">
             Once Seen is installed, come back and
             <a id="rec-open" href="seen://">tap here to open your rec</a>.
@@ -269,6 +272,24 @@
         "https://play.google.com/store/apps/details?id=com.paultaylor.seen&referrer=" +
         encodeURIComponent("seen_rec=" + token);
 
+      // iPhone: tapping the App Store button first copies the rec link,
+      // so the app's welcome screen can offer to paste it (the app reads
+      // the clipboard only when Paste is tapped). No clipboard, or a
+      // refusal: straight on to the App Store as before.
+      var recUrl = "https://seenrecs.com/r/?t=" + encodeURIComponent(token);
+      var ctaIos = document.getElementById("cta-ios");
+      ctaIos.addEventListener("click", function (e) {
+        if (isAndroid || ctaIos.dataset.claimed === "1") return;
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+        e.preventDefault();
+        var href = ctaIos.href;
+        var go = function () { location.href = href; };
+        navigator.clipboard.writeText(recUrl).then(function () {
+          document.getElementById("rec-copied").hidden = false;
+          setTimeout(go, 900);
+        }, go);
+      });
+
       fetch(FN_URL + "?token=" + encodeURIComponent(token))
         .then(function (res) {
           if (res.status === 404) throw new Error("not_found");
@@ -303,6 +324,7 @@
           if (rec.claimed) {
             document.getElementById("rec-claimed-caption").hidden = false;
             document.getElementById("rec-installed").hidden = true;
+            ctaIos.dataset.claimed = "1";
             document.getElementById("cta-ios-label").textContent =
               "Open Seen";
           }
