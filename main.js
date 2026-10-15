@@ -287,8 +287,7 @@ function markIntroSeen() {
 
   const targets = [];
 
-  // Why Seen: heading then the two text blocks, staggered so they
-  // read in order.
+  // Why Seen: heading then the lead, staggered so they read in order.
   document
     .querySelectorAll(".section--why h2, .section--why .why-copy")
     .forEach((el, i) => {
@@ -298,6 +297,9 @@ function markIntroSeen() {
 
   // Each screenshot rises in as it is reached.
   document.querySelectorAll(".shot").forEach((el) => targets.push(el));
+
+  // Each feature tile rises in as it is reached.
+  document.querySelectorAll(".why-tile").forEach((el) => targets.push(el));
 
   const observer = new IntersectionObserver(
     (entries) => {

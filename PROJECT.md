@@ -20,6 +20,7 @@ index.html    single page: intro overlay shell, hero, screenshots, why, footer.
 styles.css    V2 navy design tokens at the top (:root), then per-section styles.
 main.js       lockup animation helpers, hover eye-follow, first-visit intro +
               FLIP handoff, scroll reveals.
+tonight-demo.js  the "Watch together" section's playable Tonight deck (below).
 assets/       wordwitheyes.svg (real wordmark, inlined into index.html — the copy
               in the HTML is the live one, and it is the copy that carries the V2
               fills; the .svg file itself is still the plum Figma export),
@@ -95,6 +96,31 @@ manually.
 
 ## Key decisions and why
 
+- **Why Seen tiles** (2026-10-14): the heading and two-line lead, then eight
+  feature tiles (two columns, one under 700px): recs from friends, rec by link,
+  episodes and new-episode alerts, hidden episode comments, Most anticipated,
+  Browse, your year, importing. Each visual is HTML/CSS in the app's pieces (chip,
+  poster, caption, counters), hidden from screen readers. The Most anticipated
+  poster is an unreleased title (Beyond the Spider-Verse, June 2027); swap it
+  once that's out.
+- **Tonight demo** (2026-10-14): "Watch together" / "Watch with Sam", between the
+  screenshots and Why Seen. The app's Watch together deck inside the screenshots'
+  own bezel (`assets/phone-frame.png`: screenshot-home.png with its screen, x 81 to
+  1919, y 67 to 4042, radius 235 of 2000 x 4112, cut out; 1000px wide, 256
+  colours) laid over the demo's screen, with the same glow: swipe (pointer
+  events, touch and mouse), the ✕ / ✓ buttons or the arrow keys on the focused
+  card. Six titles, fixed metadata in `tonight-demo.js`; Sam's yeses are Knives
+  Out and The Bear, so a yes to either shows "It's a match!" (the app's MatchCard,
+  with the Welcome photos of you and Sam, `assets/tonight-you.jpg` /
+  `tonight-sam.jpg`, and its popcorn burst) with the store buttons and Try again
+  (which shuffles). No match: "You passed on all six." or "None of your yeses
+  were Sam's." Card look, sizes,
+  thresholds and timings follow the app's `tonight-deck.tsx` and
+  `match-moment.tsx`; the meta line may wrap here (the card is smaller than a
+  phone's). Reduced motion: cards just change, no popcorn. No JS: the first card as a still
+  and a line saying how it works. Nothing stored or sent. Posters are TMDB's w500
+  (`assets/tonight-*.jpg`, recompressed), credited "Posters from TMDB" under the
+  demo as well as the footer's TMDB notice.
 - **V2 navy brand system** (2026-08-09), replacing the plum-on-cream V1. Tokens in
   `styles.css` (`--ground #0B0D26`, `--surface #151838`, `--accent #9D8DF0`,
   `--text #E6E6E6`) are lifted **verbatim** from the app's `paletteV2` in

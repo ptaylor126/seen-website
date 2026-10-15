@@ -519,6 +519,487 @@ a:focus-visible {
   color: var(--muted);
 }
 
+/* ── Watch together: the Tonight demo ──────────────────────── */
+
+/* The app's Watch together deck in a phone drawn in CSS. Sizes and
+   colours are the app's tokens (tonight-deck.tsx, match-moment.tsx):
+   card radius lg 24, stamps radius md 18, 64pt round buttons 32 apart,
+   the behind card at 95% / 8px lower / 60%. Only what JS drives
+   (.td--live, inline transforms) changes at runtime. */
+
+.td-live-only {
+  display: none;
+}
+
+.td--live .td-live-only {
+  display: block;
+}
+
+.td--live .td-nojs {
+  display: none;
+}
+
+.td-sub {
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+.td--live .td-friend {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+/* The app's Welcome photos of "you" and Sam. */
+.td-avatar {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.td-phone {
+  position: relative;
+  width: min(340px, 100%);
+  aspect-ratio: 1000 / 2056;
+  margin: 28px auto 0;
+  /* The screenshots' glow (.shot-img). */
+  filter: drop-shadow(0 14px 34px rgba(157, 141, 240, 0.22));
+}
+
+/* The screenshots' bezel, screen cut out, over the demo. */
+.td-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* The screen's place in the frame (x 81 to 1919, y 67 to 4042 and a 235px
+   corner radius in the 2000 x 4112 screenshots). */
+.td-screen {
+  position: absolute;
+  left: 4.05%;
+  right: 4.05%;
+  top: 1.63%;
+  bottom: 1.7%;
+  overflow: hidden;
+  border-radius: 12.78% / 5.91%;
+  background: var(--ground);
+  padding: 0 20px 22px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.td-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  height: 46px;
+  padding: 4px 8px 0 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.td-status svg {
+  width: 62px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.td-play {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.td-play[hidden] {
+  display: none;
+}
+
+/* The app's header title (heading: Manrope semibold 22/28). */
+.td-title {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+/* "1 of 6": caption, muted, right, 12px above the card. */
+.td-counter {
+  margin: 4px 0 12px;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.td-stage {
+  position: relative;
+  /* The card takes the spare height, as the app's deck does. */
+  flex: 1;
+  min-height: 0;
+}
+
+.td-card {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.td--live .td-card--top {
+  cursor: grab;
+}
+
+.td--live .td-card--top:active {
+  cursor: grabbing;
+}
+
+.td-card--top:focus-visible {
+  outline: none;
+}
+
+.td-card--top:focus-visible .td-face {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.td-card--behind {
+  transform: translateY(8px) scale(0.95);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.td-card--arriving {
+  opacity: 0;
+}
+
+.td-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--surface-alt);
+  /* The app's hairline poster frame. */
+  box-shadow: inset 0 0 0 1px rgba(230, 230, 230, 0.25);
+}
+
+.td-face img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* onImage.scrimClear to scrimDark from 45% down. */
+.td-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10, 6, 10, 0) 45%, rgba(10, 6, 10, 0.92) 100%);
+}
+
+.td-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+}
+
+.td-name {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.td-meta {
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  color: rgba(255, 255, 255, 0.82);
+  /* Wraps here (one line in the app): the card is smaller than a phone's. */
+  text-wrap: balance;
+}
+
+/* YES across the top left, NO across the top right, hanging over the
+   card's edges; shown as the card is dragged. */
+.td-stamp {
+  position: absolute;
+  top: -8px;
+  z-index: 2;
+  padding: 2px 16px;
+  border-radius: 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.375rem;
+  opacity: 0;
+  box-shadow: 0 2px 6px rgba(10, 6, 10, 0.35);
+  pointer-events: none;
+}
+
+.td-stamp--yes {
+  left: -12px;
+  transform: rotate(-24deg);
+  background: #6FA86E;
+  color: #fff;
+}
+
+.td-stamp--no {
+  right: -12px;
+  transform: rotate(24deg);
+  background: #fff;
+  color: var(--on-accent);
+}
+
+.td--live .td-actions {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 28px;
+}
+
+.td-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(230, 230, 230, 0.25);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.td-btn svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.td-btn--yes {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.td-btn:active {
+  opacity: 0.6;
+}
+
+.td-btn:focus-visible,
+.td-again:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* The match card (the app's MatchCard) and "No match this time". */
+.td-end {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  /* Centred in the screen, which keeps the deck's height. */
+  margin: auto -12px;
+  padding: 24px 16px;
+  border-radius: 24px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.td-end[hidden] {
+  display: none;
+}
+
+.td-match-art {
+  position: relative;
+  padding-bottom: 29px; /* half a face plus its ring */
+}
+
+.td-match-poster {
+  display: block;
+  width: 140px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px rgba(230, 230, 230, 0.25);
+}
+
+.td-faces {
+  position: absolute;
+  left: -32px;
+  right: -32px;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.td-faces .td-avatar {
+  width: 58px;
+  height: 58px;
+  border: 3px solid var(--surface);
+  background: var(--surface);
+}
+
+.td-faces .td-avatar + .td-avatar {
+  margin-left: -13px;
+}
+
+/* Popcorn pops from where the photos meet (tonight-demo.js). Three
+   white puffs over a small amber hull (warning #E4AC4D). */
+.td-popcorn {
+  position: absolute;
+  left: 50%;
+  top: 29px;
+}
+
+.td-kernel {
+  position: absolute;
+  opacity: 0;
+}
+
+.td-kernel i {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.td-kernel i:last-child {
+  background: #E4AC4D;
+}
+
+.td-end-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.375rem;
+  letter-spacing: -0.01em;
+}
+
+.td-end-heading:focus {
+  outline: none;
+}
+
+.td-end-heading--quiet {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  letter-spacing: 0;
+}
+
+.td-end-title {
+  font-weight: 700;
+}
+
+.td-end-line {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.td-after {
+  margin-top: 28px;
+}
+
+.td-after[hidden],
+.td-stores[hidden] {
+  display: none;
+}
+
+.td-again {
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.td-nojs {
+  max-width: 30em;
+  margin: 24px auto 0;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+.td-credit {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* The match lands: the poster grows from 70%, the two faces slide in
+   from either side and meet, the words land with one overshoot. Never
+   with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .td-card--behind {
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+  }
+
+  .td-end--match .td-match-art {
+    animation: td-grow 0.3s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .td-end--match .td-face-you {
+    animation: td-in-left 0.32s 0.1s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .td-end--match .td-face-sam {
+    animation: td-in-right 0.32s 0.1s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .td-end--match .td-end-heading {
+    animation: td-land 0.45s 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+}
+
+@keyframes td-grow {
+  from { transform: scale(0.7); }
+}
+
+@keyframes td-in-left {
+  0% { transform: translateX(-140px); opacity: 0; }
+  33% { opacity: 1; }
+}
+
+@keyframes td-in-right {
+  0% { transform: translateX(140px); opacity: 0; }
+  33% { opacity: 1; }
+}
+
+@keyframes td-land {
+  from { transform: scale(0.5); opacity: 0; }
+}
+
 /* ── Why / how it works ────────────────────────────────────── */
 
 /* The surface step above ground is deliberately subtle (1.11:1, matching
@@ -548,6 +1029,311 @@ a:focus-visible {
   margin-top: 28px;
   font-size: clamp(1rem, 2vw, 1.15rem);
   color: var(--muted);
+}
+
+/* Feature tiles: two columns on desktop, one on mobile. Ground-coloured
+   cards on the surface band, the app's card radius (lg 24). Each visual
+   is a small drawing in the app's own pieces: a poster (radius sm 12 at
+   this size, hairline frame), a chip (radius full, hairline; selected is
+   accentWash with accent text), captions and counters. */
+.why-tiles {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 880px;
+  margin: 48px auto 0;
+  text-align: left;
+}
+
+.why-tile {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 24px;
+  background: var(--ground);
+  border: 1px solid var(--line);
+}
+
+.why-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 132px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.why-tile-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.why-tile-text {
+  margin-top: 6px;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* Shared pieces */
+.wv-poster {
+  display: block;
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(230, 230, 230, 0.25);
+  flex: none;
+}
+
+.wv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(230, 230, 230, 0.25);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.wv-chip--selected {
+  background: rgba(213, 207, 235, 0.18);
+  border-color: transparent;
+  color: var(--accent);
+}
+
+.wv-caption {
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+/* 1. A rec: poster, the friend's photo on its corner, their note. */
+.wv-rec {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100% - 32px);
+}
+
+.wv-rec-avatar {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+.wv-bubble {
+  max-width: 11em;
+  padding: 8px 12px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--surface-alt);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* 2. The rec link. */
+.wv-chip--link svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--muted);
+}
+
+/* 3. A ticked episode and the new-episode pill. */
+.wv-episode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: var(--ground);
+}
+
+.wv-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.wv-tick svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--on-accent);
+}
+
+.wv-episode-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 4. Comments, blurred until you've ticked the episode. */
+.wv-comments {
+  display: grid;
+  gap: 10px;
+  width: min(280px, 100% - 32px);
+}
+
+.wv-comment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  filter: blur(3px);
+  opacity: 0.7;
+}
+
+.wv-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+
+.wv-bar {
+  height: 10px;
+  flex: 1;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.wv-bar--short {
+  flex: 0 0 55%;
+}
+
+.wv-comments-label {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding: 4px 12px;
+  border-radius: 14px;
+  background: var(--ground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.wv-comments-label svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: currentColor;
+}
+
+/* 5. Most anticipated: a poster and the friends who want to see it. */
+.wv-anticipated {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100% - 32px);
+}
+
+.wv-friends {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.wv-faces {
+  display: flex;
+}
+
+.wv-faces img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+.wv-faces img + img {
+  margin-left: -6px;
+}
+
+/* 6. Genre and decade chips. */
+.wv-chips {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 8px;
+}
+
+/* 7. This year's counters. */
+.wv-counters {
+  display: flex;
+  gap: 24px;
+  text-align: center;
+}
+
+.wv-counters div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wv-counters dd {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.wv-counters dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* 8. Import: three sources into Seen. */
+.wv-import {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wv-sources {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+}
+
+.wv-sources .wv-chip {
+  min-height: 28px;
+  padding: 2px 10px;
+  font-size: 0.8125rem;
+}
+
+.wv-arrow {
+  width: 22px;
+  height: 22px;
+  fill: var(--muted);
+  flex: none;
+}
+
+.wv-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+@media (max-width: 699px) {
+  .why-tiles {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 36px;
+  }
 }
 
 /* ── Footer ────────────────────────────────────────────────── */
